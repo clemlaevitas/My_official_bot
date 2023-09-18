@@ -1,56 +1,59 @@
-#QUESTIONS: 
-# - HOW SHOULD I STOrE THE OHLC DATA, IN A VArIABLE?
-# - THINK ABOUT FOrMAT I WILL USE FOr DATE IN ALL CODE, when transforming it?
-# - WHAT do I want to store in database, maybe all data OHLC and update it, only signals ect. What is NEXT, automated tradebot??
-# - make a list of urls to call it together? OK
-
-# - should I organize it like ETL? or services, send ,save?
-# - put on Github for myself
-# - how to order my folders
-
-#Main only calling functions
-#Function to Extract data (API), Transform data (in dict and EMA/KChannels +  call the API multiple times in definitions format), and Load data (on database and send rquests back)
-
 #MONGODB ---------
-import pymongo
-my_client = pymongo.MongoClient("mongodb://localhost:27017/")
-# from pages.basic_mongodb import mongo
+# import pymongo
+# my_client = pymongo.MongoClient("mongodb://localhost:27017/")
 
 #PACKAGES ---------
-from flask import Flask,request
-# from pages.calcul_EMA import calcul_ema
-# from pages.data_preparation import prepare_data_for_EMA
-# from pages.new_start_date import match_EMAs_length
-# from pages.signals import compare_time_series
+from flask import Flask,request, jsonify #if needed
+from datetime import datetime
+
+from Transform.list_to_dict_ohlc import prepared_data
+from Transform.date_conversions import datetime_to_unixtime #, unixtime_to_datetime
+from Transform.multiple_queries import number_data_points, create_couples, fetch_data
 
 #---------------------------------------------------
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Hello! this is the main page <h1>NEED TO BE MODIFIED<h1>"
+    return "Hello! this is the main page <h1>NEED TO BE MODIFIED<h1>" #there are first prints idk
+
 
 @app.route("/OHLC")
 def get_ema_params_1(): #dunno if same function name or not?
-    start_date = int(request.args.get("start_date"))
+    start_date = request.args.get("start_date")
+    start_date = datetime.strptime(start_date, '%Y-%m-%d')
     end_date = request.args.get("end_date")
+    end_date = datetime.strptime(end_date, '%Y-%m-%d')
     period = request.args.get("period")
 
-    return OHLC
+    start_date = datetime_to_unixtime(start_date) #NOT *1000!!
+    end_date = datetime_to_unixtime(end_date)
 
+    datapoints = number_data_points(start_date, end_date, period)
+    couples = create_couples(start_date, end_date, datapoints)
+    data = fetch_data(couples, period)
 
-@app.route("/EMA")
-def get_ema_params_2():
-    smoothing_factor = int(request.args.get("smoothing_factor"))
-    frequency_LT = int(request.args.get("frequLT"))
-    frequency_ST = int(request.args.get("frequST"))
+    #so start_date - LT_frequency?? for matching lenght, but need to pass it as argument
 
-    return EMA 
+    dict = {}
+    dict["chart"] = "OHLC"
+    dict["OHLC"] = data
 
-@app.route("/KC")
-def get_ema_params_3():
-    #...
-    return KC
+    return dict #structure is fine
+
+#---------------------------------------------------
+# @app.route("/EMA")
+# def get_ema_params_2():
+#     smoothing_factor = int(request.args.get("smoothing_factor"))
+#     frequency_LT = int(request.args.get("frequLT"))
+#     frequency_ST = int(request.args.get("frequST"))
+
+#     return EMA 
+
+# @app.route("/KC")
+# def get_ema_params_3():
+#     #...
+#     return KC
 
 
 if __name__ == "__main__":

@@ -24,8 +24,8 @@ def list_to_dict(data, period):
     return result_list #list of dictionaries
 
 #need to think here - should I do this in the MAIN? or here?
-def prepare_data_for_EMA(coin, interval, start, end, max):
-    last_data = get_data_from_binance(coin, interval, start, end, max)
+def prepared_data(coin, start, end, interval):
+    last_data = get_data_from_binance(coin, interval, start, end)
     initial_dict = list_to_dict(last_data, interval)
 
     return initial_dict #this data needs only to be called once

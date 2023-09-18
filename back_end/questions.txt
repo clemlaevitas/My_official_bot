@@ -1,0 +1,11 @@
+#QUESTIONS now:
+# - what about matching length in OHLC return
+# - HOW SHOULD I STOrE THE OHLC DATA, IN A VArIABLE? 
+
+
+
+
+LATEr
+# - WHAT do I want to store in database, maybe all data OHLC and update it, only signals ect. What is NEXT, automated tradebot??
+# - should I organize it like ETL? or services, send ,save?
+# - how to order my folders

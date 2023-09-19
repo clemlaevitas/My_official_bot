@@ -39,13 +39,25 @@ def create_couples(start_unix, end_unix, datapoints):
     return date_ranges
 
 # 2) Fetch data
-def fetch_data(couples, period):
+def fetch_data(couples, period, partial = False):
     data = []
     for elem in couples:
         start_unix = elem[0]
         end_unix = elem[1]
         start_unix = start_unix * 1000 #ONLY HErE in entire code !!!
         end_unix = end_unix * 1000
-        results = prepared_data("BTCUSDT", start_unix, end_unix, period)
+        results = prepared_data("BTCUSDT", start_unix, end_unix, period, partial)
         data.extend(results)
     return data
+
+#example
+
+start_date = 1689698552
+end_date = 1695055353
+period = "1d"
+
+datapoints = number_data_points(start_date, end_date, period)
+couples = create_couples(start_date, end_date, datapoints)
+data = fetch_data(couples, period)
+
+print(data)

@@ -15,4 +15,10 @@ if __name__ == "__main__":
 
 
 
+import os
+
+# Obtenir le répertoire de travail actuel
+working_directory = os.getcwd()
+
+print("Répertoire de travail actuel :", working_directory)
 

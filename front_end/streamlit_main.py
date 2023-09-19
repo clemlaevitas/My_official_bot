@@ -89,28 +89,33 @@ def main():
 
 #     #QUErIES
 
-    #1) request for OHLC
+        
     start_date = st.session_state['start_date']
     end_date = st.session_state['end_date']
     period = st.session_state['period']
+
+    smoothing_factor = st.session_state['smooth']
+    frequency_LT = st.session_state['frequencyLT']
+    frequency_ST = st.session_state['frequencyST']
     
+
     if all_conditions:
+        #1) request for OHLC
         url_OHLC = f'http://127.0.0.1:5000/OHLC?start_date={start_date}&end_date={end_date}&period={period}'
         HTML_req1 = requests.get(url_OHLC)
         OHLC_data = HTML_req1.json()
         st.write('this is OHLC_data', OHLC_data)
 
-    #... should return a dictionary { chart: "OHLC", OHLC: [list of dictionaries time series] }
+        # 2) request for EMAs and signals 
+        smoothing_factor = st.session_state['smooth']
+        frequency_LT = st.session_state['frequencyLT']
+        frequency_ST = st.session_state['frequencyST']
+        url_EMA = f'http://127.0.0.1:5000/EMA?start_date={start_date}&end_date={end_date}&smoothing_factor={smoothing_factor}&period={period}&frequLT={frequency_LT}&frequST={frequency_ST}'
+        HTML_req2 = requests.get(url_EMA)
+        req2_result = HTML_req2.json()
+        st.write('this is req2_result', req2_result)
 
-        #2) request for EMAs and signals 
-        # smoothing_factor = st.session_state['smooth']
-        # frequency_LT = st.session_state['frequencyLT']
-        # frequency_ST = st.session_state['frequencyST']
-        # url_EMA = f'http://127.0.0.1:5000/EMA?start_date={unix_start_date}&end_date={unix_end_date}&smoothing_factor={smoothing_factor}&period={period}&frequLT={frequency_LT}&frequST={frequency_ST}'
-        # HTML_req2 = requests.get(url_EMA)
-        # req2_result = HTML_req2.json()
-
-    #     #... should return a dictionary { chart: "EMA and signals", EMA: [list of dictionaries time series], signals: [list of dictionaries time series]}
+    #     #should return a dictionary { chart: "EMA and signals", EMA: [list of dictionaries time series], signals: [list of dictionaries time series]}
 
     #     #3) request for Keltner Channels
     #     #todo later
@@ -129,6 +134,18 @@ def main():
 
         fig1.add_trace(trace)
         st.write(fig1)
+
+        fig2 = go.Figure()
+        x = [elem['Date'] for elem in req2_result['EMA_and_signals']]
+        y1 = [elem['EMALT'] for elem in req2_result['EMA_and_signals']]
+        y2 = [elem['EMA_ST'] for elem in req2_result['EMA_and_signals']]
+        
+        fig2.add_trace(go.Scatter(x=x, y=y1, name = 'LT'))
+        fig2.add_trace(go.Scatter(x=x, y=y2, name = 'ST'))
+
+        fig2.update_layout(title='EMAs', xaxis_title='Date', yaxis_title='EMA', xaxis_rangeslider_visible=False)
+        #signals with crossings key
+        st.write(fig2)
 
 if __name__ == "__main__":
     main()

@@ -1,36 +1,41 @@
-#need a list of dict with date!! take it maybe from OHLC
-
-# def calcul_ema(data, frq_LT, frequ_ST, smoothing_factor): #what I should do
-
-def calcul_ema(data, frq_period, smoothing_factor):
-    smoothing = smoothing_factor / (1 + frq_period) 
-
-    #initial EMA
+def ema(data, frequ_EMA, smoothing_factor, frequ_ref):
+    smoothing = smoothing_factor / (1 + frequ_EMA)
     ema_sum = 0
-    for i in range(frq_period):
-        ema_sum += data[i]['Close_price']
+    if frequ_ref == frequ_EMA:
+        key_name = 'EMA_LT'
+    elif frequ_ref != frequ_EMA:
+        key_name = 'EMA_ST'
 
-        data[i]['EMA'] = float('nan') #facultative
-    initial_ema = ema_sum / frq_period
-        
-    data[frq_period-1]['EMA'] = initial_ema
+    for i in range(frequ_EMA):
+        ema_sum += data[i]['Close_price']
+        data[i][key_name] = float('nan') #facultative
+    initial_ema = ema_sum / frequ_EMA
+
+    data[frequ_EMA-1][key_name] = initial_ema
     ema_day_before = initial_ema
 
-    #compute it
-    for i in range(frq_period, len(data)):
+    for i in range(frequ_EMA, len(data)):
         close_price = data[i]['Close_price']
         ema_value = (smoothing * close_price) + ((1 - smoothing) * ema_day_before) #ema_day_before
         ema_day_before = ema_value
         #append it to the existing dictionary
-        data[i]['EMA'] = ema_value
+        data[i][key_name] = ema_value
 
-    #ADD HErE TO KEEP ONLY FrOM THE STArT DATE!!! for both emas
+    return data
+    
+
+def calcul_ema(data, frequ_ref, frequ_EMA, smoothing_factor):
+
+    if frequ_ref == frequ_EMA:
+        data = ema(data, frequ_EMA, smoothing_factor, frequ_ref)
+
+
+    elif frequ_ref > frequ_EMA:
+        #remove the first (frequ_ref - frequ_EMA) elements from the list of dict
+        data = data[frequ_ref - frequ_EMA:]
+        #print the first date in the list of dict
+        data = ema(data, frequ_EMA, smoothing_factor, frequ_ref)
+
+    data = data[frequ_EMA-1:] #remove nan values 
 
     return data #need in the end a list of dictioanries 
-
-
-
-# data_example = [{'Date': '2023-07-07', 'Open Price': 29895.42, 'High Price': 30449.0, 'Low Price': 29701.02, 'Close_price': 30344.7, 'Volume': 34070.53895}, {'Date': '2023-07-08', 'Open Price': 30344.7, 'High Price': 30386.81, 'Low Price': 30044.47, 'Close_price': 30284.63, 'Volume': 13094.59042}, {'Date': '2023-07-09', 'Open Price': 30284.63, 'High Price': 30445.52, 'Low Price': 30061.12, 'Close_price': 30160.71, 'Volume': 15388.50196}, {'Date': '2023-07-08', 'Open Price': 30344.7, 'High Price': 30386.81, 'Low Price': 30044.47, 'Close_price': 30284.63, 'Volume': 13094.59042}, {'Date': '2023-07-09', 'Open Price': 30284.63, 'High Price': 30445.52, 'Low Price': 30061.12, 'Close_price': 30160.71, 'Volume': 15388.50196}, {'Date': '2023-07-08', 'Open Price': 30344.7, 'High Price': 30386.81, 'Low Price': 30044.47, 'Close_price': 30284.63, 'Volume': 13094.59042}, {'Date': '2023-07-09', 'Open Price': 30284.63, 'High Price': 30445.52, 'Low Price': 30061.12, 'Close_price': 30160.71, 'Volume': 15388.50196}]
-# if __name__ == "__main__":
-#     calcul_ema(data_example, 3, 2)
-#     #print(data_example)

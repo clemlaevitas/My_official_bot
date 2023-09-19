@@ -2,7 +2,7 @@ def ema(data, frequ_EMA, smoothing_factor, frequ_ref):
     smoothing = smoothing_factor / (1 + frequ_EMA)
     ema_sum = 0
     if frequ_ref == frequ_EMA:
-        key_name = 'EMA_LT'
+        key_name = 'EMA_LT' #here key need maybe to change for KC?
     elif frequ_ref != frequ_EMA:
         key_name = 'EMA_ST'
 
@@ -24,7 +24,7 @@ def ema(data, frequ_EMA, smoothing_factor, frequ_ref):
     return data
     
 
-def calcul_ema(data, frequ_ref, frequ_EMA, smoothing_factor):
+def calcul_ema(data, frequ_ref, frequ_EMA, smoothing_factor = 2):
 
     if frequ_ref == frequ_EMA:
         data = ema(data, frequ_EMA, smoothing_factor, frequ_ref)
@@ -36,6 +36,6 @@ def calcul_ema(data, frequ_ref, frequ_EMA, smoothing_factor):
         #print the first date in the list of dict
         data = ema(data, frequ_EMA, smoothing_factor, frequ_ref)
 
-    data = data[frequ_EMA-1:] #remove nan values 
+    # data = data[frequ_EMA-1:] #remove nan values TO CHANGE!!
 
     return data #need in the end a list of dictioanries 

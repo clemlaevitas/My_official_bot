@@ -68,11 +68,16 @@ smoothing_factor = 2
 
 
 new_data_LT = calcul_ema(data, frequency_LT, frequency_LT, smoothing_factor)
+new_data_LT = new_data_LT[frequency_LT-1:] #remove nan values TO CHANGE!! in definition because of KC
 print(new_data_LT[:2])
 
 new_data_ST = calcul_ema(data, frequency_LT, frequency_ST, smoothing_factor)
+new_data_ST = new_data_ST[frequency_ST-1:]
 print(new_data_ST[:5])
 
+#it takes a bit more time
+
+#SIGNALS!
 from Transform.EMA.cross_signals import crossing
 data = crossing(new_data_ST)
 

@@ -84,6 +84,7 @@ def main():
             'period': st.session_state['periodKC'],
             'formula_ATR': st.session_state['ATR'],
             'number_ATR': st.session_state['numberATR']}
+            #change parmaeters here!!
         
         st.write('these are all conditions that are stored in session state', st.session_state['all_conditons'])
 

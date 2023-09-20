@@ -29,7 +29,7 @@ def create_couples(start_unix, end_unix, datapoints):
     # end_unix = int(end_unix/1000)
 
     num_queries = datapoints // 500 + 1
-    print('this is num_queries', num_queries)
+    print('num_queries', num_queries)
 
     date_ranges = []
     for i in range(num_queries):
@@ -83,6 +83,6 @@ data = crossing(new_data_ST)
 
 dict = {}
 dict["chart"] = "EMA_and_signals"
-dict["EMa_and_signals"] = data
+dict["EMA_and_signals"] = data
 
 print(dict)

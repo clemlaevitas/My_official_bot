@@ -1,6 +1,8 @@
 from Transform.EMA.calc_EMA import calcul_ema #only not works, same problem!!
 #todo how to get the data OHLC route ect. imagine now the data
 
+# I CHANGED CALC EMA§§§
+
 #input: list of dict with date, high, low and close_price
 #output: list of dictionaries with date, EMA, upper and lower channel (then you put it in a dict ok)
 
@@ -35,8 +37,11 @@ def calculate_atr(data, atr_period):
 def calculate_keltner_channels(data, ema_period, atr_period, atr_multiplier): 
     ema_values = calcul_ema(data, ema_period, ema_period)  #see arg function
     ema_values = [ema['EMA_LT'] for ema in ema_values] #change EMA_LT
+
     print('this is ema', len(ema_values))
-    atr_values = calculate_atr(data, atr_period) 
+
+    atr_values = calculate_atr(data, atr_period)
+     
     print('this is atr', len(atr_values)) #not same length, changed it temporarly in def calc_EMA
 
     keltner_channels = []
@@ -70,10 +75,6 @@ dict["Keltner_channels"] = result
 
 print(dict)
 #It works!!!
-
-
-
-
 
 # the formula for calculating the ATR:
 #1) Calculate the true range (TR) for each data point:

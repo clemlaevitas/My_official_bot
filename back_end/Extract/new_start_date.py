@@ -1,5 +1,6 @@
 def match_EMAs_length(start_date,number, period):
-    number = number - 1 #temporary
+    number = number #temporary beore minus 1
+
     if period == "1d":
         new_date = start_date - number * 86400 #not *1000 here because will done later in multiple_queries
         return new_date
